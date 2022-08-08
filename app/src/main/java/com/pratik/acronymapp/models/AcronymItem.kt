@@ -1,6 +1,6 @@
 package com.pratik.acronymapp.models
 
-data class AcromineItem(
+data class AcronymItem(
     val lfs: List<Lf>,
     val sf: String
 )

@@ -29,11 +29,11 @@ class GenericListAdapter<T>(
     }
 
     override fun onBindViewHolder(holder: GenericViewHolder, position: Int) {
-        onForeignBind(holder, dataList.get(position), position)
+        onForeignBind(holder, dataList[position], position)
     }
 
     override fun getItemCount(): Int {
-        return dataList.size ?: 0
+        return dataList.size
     }
 
     fun refreshList(dataList: MutableList<T>) {

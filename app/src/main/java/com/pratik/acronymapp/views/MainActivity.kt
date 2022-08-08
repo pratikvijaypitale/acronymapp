@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     //On search click
     private fun onSearchClick() {
         if (NetworkUtil.isNetworkAvailable(this)) {
-            val etInput: String = mBinding.editText.text.toString() ?: ""
+            val etInput: String = mBinding.editText.text.toString()
             if (AcronymValidation.isValidInput(etInput)) {
                 KeyboardUtil.closeSoftKeyboard(mBinding.editText) //Hide soft keyboard
                 mBinding.recyclerView.visibility = View.INVISIBLE //Invisible Recycler view

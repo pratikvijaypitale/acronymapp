@@ -1,10 +1,8 @@
 package com.pratik.acronymapp.api
 
-import com.pratik.acronymapp.models.Acromine
-
-/*sealed class ApiResponse(val acromine: Acromine? = null, val errorMessage: String? = null) {
+/*sealed class ApiResponse(val acromine: Acronym? = null, val errorMessage: String? = null) {
     class Loading : ApiResponse()
-    class Success(acromine: Acromine) : ApiResponse(acromine = acromine)
+    class Success(acromine: Acronym) : ApiResponse(acromine = acromine)
     class Error(errorMessage: String) : ApiResponse(errorMessage = errorMessage)
 }*/
 

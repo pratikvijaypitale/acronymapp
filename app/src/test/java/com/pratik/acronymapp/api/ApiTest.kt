@@ -10,7 +10,7 @@ import org.junit.Test
 //Test to check Acronym API result
 class ApiTest {
 
-    lateinit var apiService: AcronymApiService
+    private lateinit var apiService: AcronymApiService
 
     @Before
     fun setUp() {

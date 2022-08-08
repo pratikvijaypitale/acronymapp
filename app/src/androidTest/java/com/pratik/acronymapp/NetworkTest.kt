@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class NetworkTest {
 
-    lateinit var mContext: Context
+    private lateinit var mContext: Context
 
     @Before
     fun setUp() {

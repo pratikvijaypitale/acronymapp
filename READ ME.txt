@@ -1,3 +1,7 @@
+Application is developed by Pratik Pitale.
+
+Following is a coding challenge:
+
 Create an App, which can be used to get the meanings for Acronyms.  
 
 Functional Acceptance Criteria  

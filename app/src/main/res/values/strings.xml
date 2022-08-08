@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AcronymApp</string>
+    <string name="search_hint">Enter acronym</string>
+    <string name="search_button">Search</string>
+    <string name="no_network">Internet connection is not available</string>
+    <string name="char_issue">Please enter at-least 3 initials</string>
+    <string name="common_error_message">Something went wrong, please try again</string>
+    <string name="no_data_found">No data found!</string>
+</resources>

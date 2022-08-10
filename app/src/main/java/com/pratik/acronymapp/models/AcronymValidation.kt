@@ -8,7 +8,8 @@ object AcronymValidation {
     /*
     Following function will return true only if input string's length is greater than 3
     * */
-    fun isValidInput(input: String): Boolean {
+    fun isValidInput(input: String?): Boolean {
+        if (input.isNullOrBlank()) return false
         return input.length >= MIN_REQUIRED_INITIALS
     }
 }

@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pratik.acronymapp.databinding.ListItemBinding
 
+/*Generic list adapter which runs on ListItemBinding
+Accept higher order function as a parameter.
+*/
 class GenericListAdapter<T>(
     private var dataList: MutableList<T>,
     val onForeignBind: (holder: GenericListAdapter<T>.GenericViewHolder, data: T, position: Int) -> Unit

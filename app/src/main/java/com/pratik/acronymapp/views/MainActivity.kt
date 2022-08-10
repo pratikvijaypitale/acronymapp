@@ -1,24 +1,21 @@
 package com.pratik.acronymapp.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.pratik.acronymapp.R
 import com.pratik.acronymapp.adapters.GenericListAdapter
-import com.pratik.acronymapp.api.AcronymApiService
 import com.pratik.acronymapp.api.ApiResponse
-import com.pratik.acronymapp.api.RetrofitHelper
 import com.pratik.acronymapp.databinding.ActivityMainBinding
 import com.pratik.acronymapp.models.AcronymValidation
 import com.pratik.acronymapp.models.Lf
-import com.pratik.acronymapp.repository.AcronymRepository
-import com.pratik.acronymapp.utils.KeyboardUtil
 import com.pratik.acronymapp.utils.NetworkUtil
 import com.pratik.acronymapp.viewmodels.MainViewModel
-import com.pratik.acronymapp.viewmodels.MainViewModelFactory
 
 /*
 * Created by Pratik Pitale
@@ -37,14 +34,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val apiService = RetrofitHelper.getInstance().create(AcronymApiService::class.java)
-        val repository = AcronymRepository(apiService)
         mViewModel =
-            ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+            ViewModelProvider(this).get(MainViewModel::class.java)
+        mBinding.viewModel = mViewModel
+        mBinding.lifecycleOwner = this
 
         initLiveData()
         setListener()
         initAdapter()
+
     }
 
     //Init live data observers
@@ -52,18 +50,20 @@ class MainActivity : AppCompatActivity() {
         //acronymApiResponseLiveData observe the acronym API response
         mViewModel.acronymApiResponseLiveData.observe(this) {
             it?.let {
-                mBinding.recyclerView.visibility = View.VISIBLE //Visible Recycler view
-                mBinding.progressBar.visibility = View.GONE //Remove progress bar
                 when (it) {
+                    is ApiResponse.Loader -> {
+                        mViewModel.progressBarLiveData.postValue(View.VISIBLE)
+                    }
                     is ApiResponse.Error -> {
+                        mViewModel.progressBarLiveData.postValue(View.GONE)
                         notifyUser(it.errorMessage ?: getString(R.string.common_error_message))
                     }
                     is ApiResponse.Success -> {
+                        mViewModel.progressBarLiveData.postValue(View.GONE)
                         if (it.data != null && it.data.isNotEmpty()) {
                             updateAdapter(it.data[0].lfs)
                         } else {
                             notifyUser(getString(R.string.no_data_found))
-                            updateAdapter(mutableListOf())
                         }
                     }
                 }
@@ -73,26 +73,25 @@ class MainActivity : AppCompatActivity() {
 
     //Basic click listener
     private fun setListener() {
-        mBinding.searchButton.setOnClickListener {
-            onSearchClick()
-        }
-    }
-
-    //On search click
-    private fun onSearchClick() {
-        if (NetworkUtil.isNetworkAvailable(this)) {
-            val etInput: String = mBinding.editText.text.toString()
-            if (AcronymValidation.isValidInput(etInput)) {
-                KeyboardUtil.closeSoftKeyboard(mBinding.editText) //Hide soft keyboard
-                mBinding.recyclerView.visibility = View.INVISIBLE //Invisible Recycler view
-                mBinding.progressBar.visibility = View.VISIBLE //Visible progress bar
-                mViewModel.getAcronym(etInput)
-            } else {
-                notifyUser(getString(R.string.char_issue))
+        //Search view text change listener
+        mBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(data: String?): Boolean {
+                return true
             }
-        } else {
-            notifyUser(getString(R.string.no_network))
-        }
+
+            override fun onQueryTextChange(data: String?): Boolean {
+                if (NetworkUtil.isNetworkAvailable(applicationContext)) {
+                    if (AcronymValidation.isValidInput(data)) {
+                        mViewModel.onSearchTextChanged(data ?: "")
+                    }
+                    updateAdapter(mutableListOf()) //Update empty list
+                } else {
+                    notifyUser(getString(R.string.no_network))
+                }
+                return true
+            }
+
+        })
     }
 
     //Initialize recyclerview data adapter
@@ -120,6 +119,6 @@ class MainActivity : AppCompatActivity() {
 
     //Display message to user on screen
     private fun notifyUser(message: String) {
-        Snackbar.make(mBinding.editText, message, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(mBinding.parentLay, message, Snackbar.LENGTH_SHORT).show()
     }
 }

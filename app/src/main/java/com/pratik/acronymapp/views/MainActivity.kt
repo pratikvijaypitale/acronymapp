@@ -1,7 +1,6 @@
 package com.pratik.acronymapp.views
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
@@ -42,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         initLiveData()
         setListener()
         initAdapter()
-
     }
 
     //Init live data observers
